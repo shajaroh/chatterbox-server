@@ -1,5 +1,5 @@
 var http = require('http');
-const handler = require('./request-handler.js');
+var handler = require('./request-handler');
 var port = 3000;
 var ip = '127.0.0.1';
 

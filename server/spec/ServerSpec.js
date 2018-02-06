@@ -16,7 +16,6 @@ describe('Node Server Request Listener Function', function() {
     // but we want to test our function's behavior totally independent of the server code
     var req = new stubs.request('/classes/messages', 'GET');
     var res = new stubs.response();
-
     handler.requestHandler(req, res);
 
     expect(res._responseCode).to.equal(200);
@@ -63,7 +62,6 @@ describe('Node Server Request Listener Function', function() {
     };
     var req = new stubs.request('/classes/messages', 'POST', stubMsg);
     var res = new stubs.response();
-
     handler.requestHandler(req, res);
 
     // Expect 201 Created response status
@@ -75,31 +73,31 @@ describe('Node Server Request Listener Function', function() {
     expect(res._ended).to.equal(true);
   });
 
-  // it('Should respond with messages that were previously posted', function() {
-  //   var stubMsg = {
-  //     username: 'Jono',
-  //     message: 'Do my bidding!'
-  //   };
-  //   var req = new stubs.request('/classes/messages', 'POST', stubMsg);
-  //   var res = new stubs.response();
-  //
-  //   handler.requestHandler(req, res);
-  //   expect(1).to.equal(1);
-  //   // expect(res._responseCode).to.equal(00);
-  //   //
-  //   //   // Now if we request the log for that room the message we posted should be there:
-  //   // req = new stubs.request('/classes/messages', 'GET');
-  //   // res = new stubs.response();
-  //   //
-  //   // handler.requestHandler(req, res);
-  //   //
-  //   // expect(res._responseCode).to.equal(200);
-  //   // var messages = JSON.parse(res._data).results;
-  //   // expect(messages.length).to.be.above(0);
-  //   // expect(messages[0].username).to.equal('Jono');
-  //   // expect(messages[0].message).to.equal('Do my bidding!');
-  //   // expect(res._ended).to.equal(true);
-  // });
+  it('Should respond with messages that were previously posted', function() {
+    var stubMsg = {
+      username: 'Jono',
+      message: 'Do my bidding!'
+    };
+    var req = new stubs.request('/classes/messages', 'POST', stubMsg);
+    var res = new stubs.response();
+
+    handler.requestHandler(req, res);
+
+    expect(res._responseCode).to.equal(201);
+
+      // Now if we request the log for that room the message we posted should be there:
+    req = new stubs.request('/classes/messages', 'GET');
+    res = new stubs.response();
+
+    handler.requestHandler(req, res);
+
+    expect(res._responseCode).to.equal(200);
+    var messages = JSON.parse(res._data).results;
+    expect(messages.length).to.be.above(0);
+    expect(messages[0].username).to.equal('Jono');
+    expect(messages[0].message).to.equal('Do my bidding!');
+    expect(res._ended).to.equal(true);
+  });
 
 
   it('Should 404 when asked for a nonexistent file', function() {
