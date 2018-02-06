@@ -26,25 +26,25 @@ var app = {
     app.$roomSelect.on('change', app.handleRoomChange);
 
     // Fetch previous messages
-    // app.startSpinner();
-    app.fetch(false);
+    app.fetch();
 
     // Poll for new messages
     setInterval(function() {
-      app.fetch(true);
+      app.fetch();
     }, 3000);
   },
 
   send: function(message) {
-    app.startSpinner();
 
     // POST the message to the server
     $.ajax({
       url: app.server,
+      contentType: 'application/json',
+      dataType: 'json',
       type: 'POST',
-      data: message,
+      data: JSON.stringify(message),
       success: function (data) {
-       console.log('HIII')
+       console.log(data);
         app.$message.val('');
 
         // Trigger a fetch to update the messages, pass true to animate
@@ -62,27 +62,26 @@ var app = {
       type: 'GET',
       contentType: 'application/json',
       success: function(data) {
-        console.log(data)
-        // // Don't bother if we have nothing to work with
-        // if (!data.results || !data.results.length) { return; }
-        //
-        // // Store messages for caching later
-        // app.messages = data.results;
-        //
-        // // Get the last message
-        // var mostRecentMessage = data.results[data.results.length - 1];
-        //
-        // // Only bother updating the DOM if we have a new message
-        // if (mostRecentMessage.objectId !== app.lastMessageId) {
-        //   // Update the UI with the fetched rooms
-        //   app.renderRoomList(data.results);
-        //
-        //   // Update the UI with the fetched messages
-        //   app.renderMessages(data.results, animate);
-        //
-        //   // Store the ID of the most recent message
-        //   app.lastMessageId = mostRecentMessage.objectId;
-        // }
+        // Don't bother if we have nothing to work with
+        if (!data.results || !data.results.length) { return; }
+
+        // Store messages for caching later
+        app.messages = data.results;
+
+        // Get the last message
+        var mostRecentMessage = data.results[data.results.length - 1];
+
+        // Only bother updating the DOM if we have a new message
+        if (mostRecentMessage.objectId !== app.lastMessageId) {
+          // Update the UI with the fetched rooms
+          app.renderRoomList(data.results);
+
+          // Update the UI with the fetched messages
+          app.renderMessages(data.results, animate);
+
+          // Store the ID of the most recent message
+          app.lastMessageId = mostRecentMessage.objectId;
+        }
       },
       error: function(error) {
         console.error('chatterbox: Failed to fetch messages', error);
@@ -212,6 +211,7 @@ var app = {
   },
 
   handleSubmit: function(event) {
+    console.log(app.username);
     var message = {
       username: app.username,
       text: app.$message.val(),

@@ -14,13 +14,17 @@ var requestHandler = function(request, response) {
     let body = [];
     request.on('data', (chunk) => {
         body.push(chunk);
-    }).on('end', () => {
-      body = Buffer.concat(body).toString();
+    });
+    request.on('end', () => {
+      body = body.reduce((a, e) => { return a + e}, '');
+      console.log(body);
       statusCode = 201;
       if (!routes.includes(returnObj.url)) {
         statusCode = 404;
       }
-      messages.push(JSON.parse(body));
+      let parsed = JSON.parse(body);
+      parsed.objectId = messages.length + 1;
+      messages.push(parsed);
       returnObj.results = messages;
       response.writeHead(statusCode, responseHeaders);
       response.end(JSON.stringify(returnObj));
@@ -34,6 +38,11 @@ var requestHandler = function(request, response) {
       returnObj.results = messages;
       response.writeHead(statusCode, responseHeaders);
       response.end(JSON.stringify(returnObj));
+  }
+
+  if (request.method === 'OPTIONS') {
+    response.writeHead(204, responseHeaders);
+    response.end();
   }
 
 };
