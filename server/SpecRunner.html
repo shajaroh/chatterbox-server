@@ -1,0 +1,38 @@
+<html>
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+
+    <title>Mocha Tests</title>
+    <link rel="stylesheet" href="lib/mocha/mocha.css">
+    <script src="../node_modules/jquery/dist/jquery.js"></script>
+    <script src="../node_modules/underscore/underscore.js"></script>
+    <script src="../node_modules/chai/chai.js"></script>
+    <script src="../node_modules/sinon/lib/sinon.js"></script>
+    <script src="../node_modules/sinon-chai/lib/sinon-chai.js"></script>
+    <script src="../node_modules/mocha/mocha.js"></script>
+</head>
+<body>
+<div id="mocha"></div>
+<script>
+  mocha.setup({
+    'ui': 'bdd'
+  });
+  window.expect = chai.expect;
+</script>
+
+<!-- source files -->
+<script type="text/javascript" src="./basic-server.js"></script>
+<script type="text/javascript" src="./request-handler.js"></script>
+
+<!-- spec files -->
+<script type="text/javascript" src="./spec/LiveServerIntegrationSpec.js"></script>
+<script type="text/javascript" src="./spec/ServerSpec.js"></script>
+
+<script>
+  $(function() {
+    window.mochaPhantomJS ? mochaPhantomJS.run() : mocha.run();
+  });
+</script>
+</body>
+</html>
